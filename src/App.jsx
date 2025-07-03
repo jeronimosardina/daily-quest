@@ -45,6 +45,10 @@ function App() {
       <ToastContainer position="bottom-right" autoClose={3000} />
     </div>
   );
+  <footer style={{ textAlign: "center", marginTop: "2rem", color: "#999", fontSize: "0.9rem" }}>
+  Hecho con 💻 por <a href="https://github.com/jeronimosardina" target="_blank" rel="noopener noreferrer">jeronimosardina</a>
+</footer>
+
 }
 
 export default App;
