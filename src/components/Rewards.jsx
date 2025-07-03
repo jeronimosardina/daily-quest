@@ -1,37 +1,35 @@
-import { useQuestStore } from "../data/useQuestStore";
-import { toast } from "react-toastify";
+import React from 'react';
 
-const Rewards = () => {
-  const rewards = useQuestStore((state) => state.rewards);
-  const skills = useQuestStore((state) => state.skills);
-  const spendSkill = useQuestStore((state) => state.spendSkill);
+const rewardsList = [
+  { id: 1, name: 'Comida por delivery', cost: 1 },
+  { id: 2, name: 'Comprar una remera', cost: 2 },
+  { id: 3, name: 'Tarde libre', cost: 3 },
+];
+
+function Rewards({ skills, setSkills, showToast }) {
+  const handleRedeem = (reward) => {
+    if (skills >= reward.cost) {
+      setSkills(skills - reward.cost);
+      showToast(`🎉 Canjeaste: ${reward.name}`);
+    } else {
+      showToast('❌ No tenés suficientes skills');
+    }
+  };
 
   return (
-    <div style={{ padding: "1rem" }}>
+    <div>
       <h2>Recompensas</h2>
+      <p>Skills disponibles: {skills}</p>
       <ul>
-        {rewards.map((r) => (
-          <li key={r.id} style={{ marginBottom: "1rem" }}>
-            <strong>{r.name}</strong> — Costo: {r.cost} skill{r.cost > 1 ? "s" : ""}
-            <br />
-            <button
-              disabled={skills < r.cost}
-              onClick={() => {
-                if (skills < r.cost) {
-                  toast.error("❌ No tenés skills suficientes.");
-                } else {
-                  spendSkill(r.id);
-                  toast.success(`🎁 Canjeaste: ${r.name}`);
-                }
-              }}
-            >
-              Canjear
-            </button>
+        {rewardsList.map((reward) => (
+          <li key={reward.id}>
+            {reward.name} ({reward.cost} skills)
+            <button onClick={() => handleRedeem(reward)}>Canjear</button>
           </li>
         ))}
       </ul>
     </div>
   );
-};
+}
 
 export default Rewards;
