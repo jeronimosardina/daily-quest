@@ -1,0 +1,12 @@
+body {
+  background-color: black;
+  color: lime;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+input, button {
+  background-color: black;
+  color: lime;
+  border: 1px solid lime;
+  padding: 5px;
+}
