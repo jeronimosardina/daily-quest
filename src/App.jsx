@@ -1,54 +1,48 @@
-import { useState } from "react";
+// App.jsx
+import { useState, useEffect } from "react";
 import CreateQuest from "./components/CreateQuest";
 import QuestLog from "./components/QuestLog";
 import Rewards from "./components/Rewards";
+import Footer from "./components/Footer";
 import { useQuestStore } from "./data/useQuestStore";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import "./App.css";
 
 function App() {
-  const [tab, setTab] = useState("log");
-  const { xp, level, skills } = useQuestStore();
+  const { quests, addQuest, completeSubquest, xp, level, skills, claimReward } = useQuestStore();
+  const [themeColor, setThemeColor] = useState(() => {
+    return localStorage.getItem("themeColor") || "#00ff91";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("themeColor", themeColor);
+  }, [themeColor]);
 
   return (
-    <div style={{
-      backgroundColor: "#000",
-      color: "lime",
-      minHeight: "100vh",
-      fontFamily: "monospace",
-    }}>
-      <nav style={{
-        display: "flex",
-        gap: "1rem",
-        padding: "1rem",
-        borderBottom: "1px solid lime",
-      }}>
-        <button onClick={() => setTab("log")}>📜 Quest Log</button>
-        <button onClick={() => setTab("create")}>📝 Crear Quest</button>
-        <button onClick={() => setTab("rewards")}>🎁 Recompensas</button>
-      </nav>
+    <div className="App">
+      <h1>Daily Quest</h1>
 
-      <div style={{
-        padding: "1rem",
-        borderBottom: "1px solid lime",
-        backgroundColor: "#020",
-      }}>
-        <p>🔰 Level: {level} | ⚔️ XP: {xp} | 🧠 Skills: {skills}</p>
+      <div style={{ marginBottom: "1rem" }}>
+        <label>Color del progreso: </label>
+        <input
+          type="color"
+          value={themeColor}
+          onChange={(e) => setThemeColor(e.target.value)}
+        />
       </div>
 
-      <main>
-        {tab === "log" && <QuestLog />}
-        {tab === "create" && <CreateQuest />}
-        {tab === "rewards" && <Rewards />}
-      </main>
+      <CreateQuest onAdd={addQuest} />
+      <QuestLog quests={quests} onToggle={completeSubquest} themeColor={themeColor} />
+      <Rewards level={level} skills={skills} onClaim={claimReward} />
 
-      <ToastContainer position="bottom-right" autoClose={3000} />
+      <div className="stats">
+        <p>XP: {xp}</p>
+        <p>Nivel: {level}</p>
+        <p>Skills: {skills}</p>
+      </div>
+
+      <Footer />
     </div>
   );
-  <footer style={{ textAlign: "center", marginTop: "2rem", color: "#999", fontSize: "0.9rem" }}>
-  Hecho con 💻 por <a href="https://github.com/jeronimosardina" target="_blank" rel="noopener noreferrer">jeronimosardina</a>
-</footer>
-
 }
 
 export default App;

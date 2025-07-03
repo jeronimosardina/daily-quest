@@ -1,55 +1,33 @@
-import { useState } from "react";
-import { useQuestStore } from "../data/useQuestStore";
+import React from "react";
 
-const QuestLog = () => {
-  const quests = useQuestStore((state) => state.quests);
-  const toggleSubtask = useQuestStore((state) => state.toggleSubtask);
-  const [selectedQuest, setSelectedQuest] = useState(null);
-
+export default function QuestLog({ quests, onToggle, themeColor }) {
   return (
-    <div style={{ display: "flex", height: "80vh", padding: "1rem", color: "lime" }}>
-      <div style={{ width: "30%", borderRight: "1px solid #0f0" }}>
-        <h2>Quest Log</h2>
-        {quests.map((q) => (
-          <div
-            key={q.id}
-            onClick={() => setSelectedQuest(q)}
-            style={{
-              cursor: "pointer",
-              padding: "0.5rem",
-              backgroundColor: selectedQuest?.id === q.id ? "#030" : "transparent",
-              textDecoration: q.completed ? "line-through" : "none",
-            }}
-          >
-            {q.title}
-          </div>
-        ))}
-      </div>
-      <div style={{ width: "70%", padding: "1rem" }}>
-        {selectedQuest ? (
-          <>
-            <h2>{selectedQuest.title}</h2>
-            <ul>
-              {selectedQuest.subtasks.map((st) => (
-                <li key={st.id}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={st.done}
-                      onChange={() => toggleSubtask(selectedQuest.id, st.id)}
-                    />
-                    {" "}{st.text}
-                  </label>
-                </li>
-              ))}
-            </ul>
-          </>
-        ) : (
-          <p>Seleccioná una quest para ver los detalles</p>
-        )}
-      </div>
+    <div>
+      <h2>Quest Log</h2>
+      {quests.map((quest, questIndex) => (
+        <div key={questIndex} style={{ marginBottom: "1rem" }}>
+          <strong>{quest.title}</strong>
+          {quest.subquests.map((sub, subIndex) => (
+            <div key={subIndex}>
+              <input
+                type="checkbox"
+                checked={sub.completed}
+                onChange={() => onToggle(questIndex, subIndex)}
+              />
+              <span
+                style={{
+                  textDecoration: sub.completed ? "line-through" : "none",
+                  opacity: sub.completed ? 0.6 : 1,
+                  color: sub.completed ? themeColor : "#fff",
+                  fontFamily: "monospace"
+                }}
+              >
+                {sub.text}
+              </span>
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
-};
-
-export default QuestLog;
+}
